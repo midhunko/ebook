@@ -36,6 +36,12 @@ function SideBar({ addEbook, ebook }) {
     console.log(ebook);
   }, [ebook]);
  */
+
+  const returnTitle = (title) => {
+    if (title?.length > 10) return title?.substr(0, 10) + "...";
+    if (title?.length < 10) return title;
+  };
+
   return (
     <>
       <Drawer
@@ -51,12 +57,12 @@ function SideBar({ addEbook, ebook }) {
         anchor="left"
       >
         {/* <Toolbar /> */}
-        {ebook && ebook.length > 0 && (
+        {ebook && ebook?.length > 0 && (
           <List>
             {ebook?.map((text, index) => (
               <ListItem button key={text}>
                 <ListItemText
-                  primary={text.title}
+                  primary={returnTitle(text?.title)}
                   onClick={() => {
                     navigate("/page", { state: text });
                   }}

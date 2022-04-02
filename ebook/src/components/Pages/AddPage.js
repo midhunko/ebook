@@ -26,11 +26,9 @@ function AddPage({ addEbook, ebook }) {
     let totalPages = [...ebook, params];
     localStorage.setItem("ebook", JSON.stringify(totalPages));
     addEbook(totalPages);
+    setPara("");
+    setTitle("");
   };
-
-  useEffect(() => {
-    console.log(ebook);
-  }, [ebook]);
 
   return (
     <>
@@ -58,7 +56,7 @@ function AddPage({ addEbook, ebook }) {
       </div>
       <br />
       <Button variant="outlined" onClick={() => savePage()}>
-        Save
+        Add Page
       </Button>
     </>
   );
