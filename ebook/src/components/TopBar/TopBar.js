@@ -4,10 +4,13 @@ import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 function TopBar() {
   let navigate = useNavigate();
+  let location = useLocation();
+
+  console.log(location);
   return (
     <Box sx={{ flexGrow: 1 }} className="page-main-top">
       <AppBar position="static">
@@ -24,14 +27,22 @@ function TopBar() {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Ebook
           </Typography>
-          <Button
-            color="inherit"
-            onClick={() => {
-              navigate("/");
-            }}
-          >
-            Home
-          </Button>
+          {location.pathname === "/" && (
+            <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+              Add New Page
+            </Typography>
+          )}
+
+          {location.pathname !== "/" && (
+            <Button
+              color="inherit"
+              onClick={() => {
+                navigate("/");
+              }}
+            >
+              + Add Page
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
     </Box>
