@@ -14,28 +14,23 @@ const drawerWidth = 240;
 
 function SideBar({ addEbook, ebook }) {
   let navigate = useNavigate();
-  // console.log(JSON.stringify(ebookJSON));
 
-  /*  useEffect(() => {
-    if (!localStorage.getItem("ebook")) {
-      localStorage.setItem("ebook", JSON.stringify(ebookJSON));
-      let data = [];
-      for (var i in ebookJSON) {
-        data.push([i, ebookJSON[i]]);
-        console.log(data);
+  useEffect(() => {
+    if (!ebook?.length) {
+      if (localStorage.getItem("ebook")) {
+        let data = localStorage.getItem("ebook");
+        addEbook(JSON.parse(data));
       }
-      ebook?.length === 0 && addEbook(data);
     }
-    if (localStorage.getItem("ebook")?.length > 0) {
-      let data = localStorage.getItem("ebook");
-      addEbook(data);
-    }
-  }, []); */
+  }, []);
 
-  /*  useEffect(() => {
-    console.log(ebook);
-  }, [ebook]);
- */
+  const sortedTitles = (ebook) => {
+    if (ebook?.length) {
+      let titles = ebook.sort((a, b) => (a.id > b.id ? 1 : -1));
+      return titles;
+    }
+    return [];
+  };
 
   const returnTitle = (title) => {
     if (title?.length > 10) return title?.substr(0, 10) + "...";
@@ -59,13 +54,29 @@ function SideBar({ addEbook, ebook }) {
         {/* <Toolbar /> */}
         {ebook && ebook?.length > 0 && (
           <List>
-            {ebook?.map((text, index) => (
-              <ListItem button key={text}>
+            {sortedTitles(ebook)?.map((text, index) => (
+              <ListItem button key={index}>
                 <ListItemText
                   primary={returnTitle(text?.title)}
                   onClick={() => {
                     navigate("/page", { state: text });
                   }}
+                  //key={index}
+                />
+              </ListItem>
+            ))}
+          </List>
+        )}
+        {!ebook?.length && (
+          <List>
+            {["Add pages"].map((text, index) => (
+              <ListItem button key={index}>
+                <ListItemText
+                  primary={text}
+                  onClick={() => {
+                    navigate("/page");
+                  }}
+                  //key={index}
                 />
               </ListItem>
             ))}
@@ -89,7 +100,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   addEbook: (data) => {
-    //console.log(data);
     dispatch({ type: "ADD_BOOK", payload: data });
   },
 });

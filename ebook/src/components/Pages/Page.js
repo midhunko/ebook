@@ -1,25 +1,60 @@
 import React, { useEffect, useState } from "react";
 import TextField from "@mui/material/TextField";
 import { connect } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@mui/material";
 
-function Page({ ebook }) {
+function Page({ ebook, addEbook }) {
   const location = useLocation();
+  let navigate = useNavigate();
+
   const [edit, setEdit] = useState(false);
+  const [title, setTitle] = useState("");
+  const [para, setPara] = useState("");
+
+  useEffect(() => {
+    if (!ebook?.length) {
+      navigate("/");
+    }
+  }, [ebook]);
+
+  useEffect(() => {
+    if (edit) {
+      setTitle(location.state.title);
+      setPara(location.state.para);
+    }
+    if (!edit) {
+      setTitle("");
+      setPara("");
+    }
+  }, [edit]);
 
   const handleEdit = () => {
     setEdit(true);
   };
 
+  const handleTitleChange = (event) => {
+    setTitle(event.target.value);
+  };
+
+  const handleParaChange = (event) => {
+    setPara(event.target.value);
+  };
+
   const handleSave = (data) => {
+    let temp = [];
     let params = {
       id: data?.id,
-      title: data?.title,
-      para: data?.para,
+      title: title,
+      para: para,
     };
-    console.log(params, "edit");
+    temp = ebook.filter((item) => item.id !== data.id);
+    let newPages = [...temp, params];
+    // newPages.sort((a, b) => (a.id < b.id ? 1 : -1));
+    localStorage.setItem("ebook", JSON.stringify(newPages));
+    addEbook(newPages);
     setEdit(false);
+    navigate("/");
   };
 
   return (
@@ -31,8 +66,8 @@ function Page({ ebook }) {
           disabled={edit ? false : true}
           fullWidth
           maxRows={4}
-          value={location.state.title}
-         // onChange={handleTitleChange}
+          value={edit ? title : location.state.title}
+          onChange={handleTitleChange}
         />
       </div>
       <br />
@@ -44,8 +79,8 @@ function Page({ ebook }) {
           multiline
           disabled={edit ? false : true}
           rows={15}
-          value={location.state.para}
-         // onChange={handleParaChange}
+          value={edit ? para : location.state.para}
+          onChange={handleParaChange}
         />
       </div>
       <br />
@@ -74,11 +109,28 @@ function Page({ ebook }) {
           </Button>
         </>
       )}
+      <span className="btn-margin">
+        <Button
+          variant="outlined"
+          onClick={() => {
+            navigate("/");
+          }}
+        >
+          + Add Page
+        </Button>
+      </span>
     </>
   );
 }
+
 const mapStateToProps = (state) => ({
   ebook: state.ebook,
 });
 
-export default connect(mapStateToProps, null)(Page);
+const mapDispatchToProps = (dispatch) => ({
+  addEbook: (data) => {
+    dispatch({ type: "ADD_BOOK", payload: data });
+  },
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Page);

@@ -10,7 +10,6 @@ function TopBar() {
   let navigate = useNavigate();
   let location = useLocation();
 
-  console.log(location);
   return (
     <Box sx={{ flexGrow: 1 }} className="page-main-top">
       <AppBar position="static">
