@@ -1,13 +1,10 @@
 import React, { useEffect } from "react";
 import Drawer from "@mui/material/Drawer";
-import Toolbar from "@mui/material/Toolbar";
 import List from "@mui/material/List";
-import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { useNavigate } from "react-router-dom";
 
-//import ebookJSON from "../../eBookData.json";
 import { connect } from "react-redux";
 
 const drawerWidth = 240;
@@ -82,13 +79,6 @@ function SideBar({ addEbook, ebook }) {
             ))}
           </List>
         )}
-        {/*  <List>
-          {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-            <ListItem button key={text}>
-              <ListItemText primary={text} />
-            </ListItem>
-          ))}
-        </List> */}
       </Drawer>
     </>
   );
