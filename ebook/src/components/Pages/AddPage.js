@@ -6,6 +6,8 @@ import { connect } from "react-redux";
 function AddPage({ addEbook, ebook }) {
   const [title, setTitle] = useState("");
   const [para, setPara] = useState("");
+  const [paraError, setParaError] = useState("");
+  const [titleError, setTitleError] = useState("");
 
   const handleTitleChange = (event) => {
     setTitle(event.target.value);
@@ -15,19 +17,34 @@ function AddPage({ addEbook, ebook }) {
     setPara(event.target.value);
   };
 
+  const editValidate = (data) => {
+    if (!data.title.trim()) {
+      setTitleError("Title field is required !");
+      return false;
+    }
+    if (!data.para.trim()) {
+      setParaError("Paragraph field is required !");
+      return false;
+    }
+    return true;
+  };
+
   const savePage = (event) => {
-    //event.preventDefault();
+    setParaError("");
+    setTitleError("");
     let index = ebook?.length + 1;
     let params = {
       id: index,
       title: title,
       para: para,
     };
-    let totalPages = [...ebook, params];
-    localStorage.setItem("ebook", JSON.stringify(totalPages));
-    addEbook(totalPages);
-    setPara("");
-    setTitle("");
+    if (editValidate(params)) {
+      let totalPages = [...ebook, params];
+      localStorage.setItem("ebook", JSON.stringify(totalPages));
+      addEbook(totalPages);
+      setPara("");
+      setTitle("");
+    }
   };
 
   return (
@@ -43,6 +60,8 @@ function AddPage({ addEbook, ebook }) {
         />
       </div>
       <br />
+      <div className="error-msg">{titleError}</div>
+      <br />
       <div>
         <TextField
           id="outlined-multiline-flexible"
@@ -54,6 +73,8 @@ function AddPage({ addEbook, ebook }) {
           onChange={handleParaChange}
         />
       </div>
+      <br />
+      <div className="error-msg">{paraError}</div>
       <br />
       <Button variant="outlined" onClick={() => savePage()}>
         Add Page

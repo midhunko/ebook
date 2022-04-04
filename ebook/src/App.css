@@ -6,5 +6,8 @@
   margin-bottom: 10px;
 }
 .btn-margin {
- margin-left: 10px;
+  margin-left: 10px;
+}
+.error-msg {
+  color: red;
 }

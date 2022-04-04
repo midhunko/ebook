@@ -11,6 +11,8 @@ function Page({ ebook, addEbook }) {
   const [edit, setEdit] = useState(false);
   const [title, setTitle] = useState("");
   const [para, setPara] = useState("");
+  const [paraError, setParaError] = useState("");
+  const [titleError, setTitleError] = useState("");
 
   useEffect(() => {
     if (!ebook?.length) {
@@ -41,20 +43,35 @@ function Page({ ebook, addEbook }) {
     setPara(event.target.value);
   };
 
+  const editValidate = (data) => {
+    if (!data.title.trim()) {
+      setTitleError("Title field is required !");
+      return false;
+    }
+    if (!data.para.trim()) {
+      setParaError("Paragraph field is required !");
+      return false;
+    }
+    return true;
+  };
+
   const handleSave = (data) => {
+    setParaError("");
+    setTitleError("");
     let temp = [];
     let params = {
       id: data?.id,
       title: title,
       para: para,
     };
-    temp = ebook.filter((item) => item.id !== data.id);
-    let newPages = [...temp, params];
-    // newPages.sort((a, b) => (a.id < b.id ? 1 : -1));
-    localStorage.setItem("ebook", JSON.stringify(newPages));
-    addEbook(newPages);
-    setEdit(false);
-    navigate("/");
+    if (editValidate(params)) {
+      temp = ebook.filter((item) => item.id !== data.id);
+      let newPages = [...temp, params];
+      localStorage.setItem("ebook", JSON.stringify(newPages));
+      addEbook(newPages);
+      setEdit(false);
+      navigate("/");
+    }
   };
 
   return (
@@ -71,6 +88,8 @@ function Page({ ebook, addEbook }) {
         />
       </div>
       <br />
+      <div className="error-msg">{titleError}</div>
+      <br />
       <div>
         <TextField
           id="outlined-multiline-flexible"
@@ -83,6 +102,8 @@ function Page({ ebook, addEbook }) {
           onChange={handleParaChange}
         />
       </div>
+      <br />
+      <div className="error-msg">{paraError}</div>
       <br />
       {edit ? (
         <>
